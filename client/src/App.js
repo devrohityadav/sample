@@ -40,8 +40,12 @@ class App extends Component {
       formData.append(attribute, data[attribute]);
     }
 
+    const url = {
+      development: "http://localhost:8080/process",
+      production: "https://admission-sample.herokuapp.com/process",
+    };
     try {
-      const response = await fetch("http://localhost:8080/process", {
+      const response = await fetch(url.production, {
         method: "POST",
         body: formData,
       });
