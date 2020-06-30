@@ -10,10 +10,27 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyparser.json());
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-app.post("/process", upload.single("img"), (req, res) => {
-  // save in database do some processing
-  res.send({ file: req.file });
-});
+app.post(
+  "/process",
+  upload.fields([
+    {
+      name: "pd",
+      maxCount: 1,
+    },
+    {
+      name: "bpl",
+      maxCount: 1,
+    },
+    {
+      name: "img",
+      maxCount: 1,
+    },
+  ]),
+  (req, res) => {
+    // save in database do some processing
+    res.send({ file: req.files });
+  }
+);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
