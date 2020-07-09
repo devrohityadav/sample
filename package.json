@@ -2,19 +2,29 @@
   "name": "postadmission",
   "version": "0.0.1",
   "description": "Post Admission server",
-  "main": "index.js",
+  "license": "UNLICENSED",
+  "main": "src/index.ts",
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "pg": "^8.2.1"
   },
   "scripts": {
-    "start": "node src/index.js",
     "dev": "./scripts/dev.sh",
+    "start": "node build/index.js",
+    "build": "./scripts/build.sh",
     "client": "cd client && npm start",
-    "build": "cd client && npm run build"
+    "build:client": "cd client && npm run build"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.6",
+    "@types/multer": "^1.4.3",
+    "@types/node": "^14.0.14",
+    "@types/pg": "^7.14.3",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.6"
   }
 }
