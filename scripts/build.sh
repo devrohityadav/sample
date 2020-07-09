@@ -8,4 +8,4 @@ gnome-terminal -e 'npm run build:client'
 clear
 
 echo "[Step 3]: Building api-server..."
-tsc -b
+yarn tsc

@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 
-const connectionString = "postgresql://postgres:password@localhost:5000/test";
+import { config } from "../config";
 
-const pool = new Pool({ connectionString });
+const pool = new Pool({ connectionString: config.DB_URL });
 
 export default pool;

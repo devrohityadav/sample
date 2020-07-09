@@ -5,21 +5,16 @@
 - React client runs on port 3000
 - Server runs on port 8080
 
-# How to Start development mode -- Linux
+# How to Start development mode
 
 npm run dev
 
-# How to Start development mode -- Windows
-
-- [Step 1]: In one cmd prompt run "npm run client"
-- [Step 2]: In another cmd prompt run "NODE_ENV=development nodemon src/\*.js"
-
-# How to build the react client
+# How to build
 
 npm run build
 
 # How to deploy the microservice
 
-- Build the react client
+- Build the project
   - npm run build
 - Deploy!

@@ -1,14 +1,17 @@
 import * as path from "path";
+import * as cors from "cors";
 import * as express from "express";
 import * as bodyparser from "body-parser";
 
+import { config } from "./config";
 import { StudentRouter } from "./students";
 
 var app = express();
-const PORT = process.env.PORT || 8080;
 
 app.use(bodyparser.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, "../client/build")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes setup
 app.use("/students", StudentRouter);
@@ -19,8 +22,8 @@ app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
 
-app.listen(PORT, () => {
+app.listen(config.PORT, () => {
   console.log(
-    `Server running on port: ${PORT} in ${process.env.NODE_ENV} mode.`
+    `Server running on port: ${config.PORT} in ${config.NODE_ENV} mode.`
   );
 });
