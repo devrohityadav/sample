@@ -60,6 +60,7 @@ StudentRouter.post(
 
       if (!errors.isEmpty()) {
         res.status(400).send({ error: errors.array() });
+        return;
       }
 
       const { rows } = await Student.create({
