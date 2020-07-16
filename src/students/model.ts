@@ -15,7 +15,7 @@ interface Student {
 
   // Postal Address
   area: String;
-  state: String;
+  _state: String;
   current_address: String;
   permanent_address: String;
 
@@ -58,7 +58,7 @@ const create = (student: Student) => {
       student.marital_status,
       student.annual_family_income,
       student.area,
-      student.state,
+      student._state,
       student.current_address,
       student.permanent_address,
       student.father_name,

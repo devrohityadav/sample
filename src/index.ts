@@ -6,7 +6,7 @@ import * as bodyparser from "body-parser";
 import { config } from "./config";
 import { StudentRouter } from "./students";
 
-var app = express();
+let app = express();
 
 app.use(bodyparser.json());
 app.use(cors());
@@ -27,3 +27,5 @@ app.listen(config.PORT, () => {
     `Server running on port: ${config.PORT} in ${config.NODE_ENV} mode.`
   );
 });
+
+export { app };
