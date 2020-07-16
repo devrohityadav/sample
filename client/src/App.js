@@ -40,18 +40,22 @@ class App extends Component {
       formData.append(attribute, data[attribute]);
     }
 
-    const url = {
-      development: "http://localhost:8080/process",
-      production: "https://admission-sample.herokuapp.com/process",
-    };
+    const url = "http://localhost:8080/students/abc-123";
+
     try {
-      const response = await fetch(url.production, {
+      const response = await fetch(url, {
         method: "POST",
         body: formData,
       });
 
+      const json = await response.json();
+
       if (response.status === 200) {
         this.setState(() => ({ success: true }));
+      } else {
+        throw new Error(
+          `Status: ${response.status} , error: ${JSON.stringify(json.error)}`
+        );
       }
     } catch (error) {
       this.setState(() => ({ error: error.message }));
@@ -63,11 +67,61 @@ class App extends Component {
   render() {
     const { data, loading } = this.state;
 
+    if (loading) return <h1>Loading</h1>;
+
+    if (data === undefined)
+      return (
+        <div>
+          <h1>Please select a student id</h1>
+          <p>
+            1. Use{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="http://localhost:3000?id=1"
+            >
+              localhost:3000?id=1
+            </a>
+          </p>
+          <p>
+            2. Use{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="http://localhost:3000?id=2"
+            >
+              localhost:3000?id=2
+            </a>
+          </p>
+          <p>
+            3. Use{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="http://localhost:3000?id=3"
+            >
+              localhost:3000?id=3
+            </a>
+          </p>
+          <p>
+            4. Use{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="http://localhost:3000?id=4"
+            >
+              localhost:3000?id=4
+            </a>
+          </p>
+        </div>
+      );
+
     return (
       <div style={{ margin: 16, padding: 16 }}>
-        {loading && <h1>Loading</h1>}
         {this.state.success && <p>Form Successfully submitted</p>}
-        {!!this.state.error && <p>[Error occurred]: {this.state.error}</p>}
+        <div style={{ color: "red" }}>
+          {!!this.state.error && <p>[Error occurred]: {this.state.error}</p>}
+        </div>
 
         <p>Name: {data.name}</p>
         <form onSubmit={this.handleSubmit}>

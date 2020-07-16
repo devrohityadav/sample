@@ -25,6 +25,6 @@ const forms = [
   },
 ];
 
-export const getData = (id = 0) => {
+export const getData = (id) => {
   return forms.filter((form) => form.form_id === id)[0];
 };
