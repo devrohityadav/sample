@@ -14,11 +14,13 @@
     "uuid": "^8.2.0"
   },
   "scripts": {
+    "build": "tsc",
     "dev": "./scripts/dev.sh",
     "start": "node build/index.js",
-    "build": "./scripts/build.sh",
     "client": "cd client && npm start",
-    "build:client": "cd client && npm run build"
+    "build:linux": "./scripts/build.sh",
+    "build:client": "cd client && npm run build",
+    "build:windows": "npm run build && npm run build:client"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",

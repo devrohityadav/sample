@@ -9,9 +9,13 @@
 
 npm run dev
 
-# How to build
+# How to build (Windows)
 
-npm run build
+npm run build:windows
+
+# How to build (Linux)
+
+npm run build:linux
 
 # How to deploy the microservice
 
