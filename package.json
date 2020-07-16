@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "./scripts/dev.sh",
+    "dev": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
     "start": "node build/index.js",
     "client": "cd client && npm start",
     "build:linux": "./scripts/build.sh",

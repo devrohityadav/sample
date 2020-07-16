@@ -7,7 +7,13 @@
 
 # How to Start development mode
 
+1) In one terminal / cmd run server
+
 npm run dev
+
+2) In another terminal / cmd run client
+
+npm run client
 
 # How to build (Windows)
 
