@@ -2,6 +2,7 @@ import qs from "qs";
 import React, { Component } from "react";
 
 import { getData } from "./database";
+import { Index } from "./components";
 
 class App extends Component {
   state = {
@@ -68,6 +69,8 @@ class App extends Component {
     const { data, loading } = this.state;
 
     if (loading) return <h1>Loading</h1>;
+
+    return <Index />;
 
     if (data === undefined)
       return (
