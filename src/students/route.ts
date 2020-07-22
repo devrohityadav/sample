@@ -28,33 +28,10 @@ StudentRouter.get("/:id", async (req, res) => {
 
 StudentRouter.post(
   "/:studentId",
-  upload.fields([
-    {
-      name: "pwd",
-      maxCount: 1,
-    },
-    {
-      name: "bpl",
-      maxCount: 1,
-    },
-    {
-      name: "img",
-      maxCount: 1,
-    },
-  ]),
   validator(),
   async (req: Request, res: Response) => {
     try {
       const { studentId } = req.params;
-
-      const documents = {
-        // @ts-ignore
-        bpl: req.files["bpl"] ? req.files["bpl"][0].path : null,
-        // @ts-ignore
-        pwd: req.files["pwd"] ? req.files["pwd"][0].path : null,
-        // @ts-ignore
-        img: req.files["img"] ? req.files["img"][0].path : null,
-      };
 
       const errors = validationResult(req);
 
@@ -66,13 +43,66 @@ StudentRouter.post(
       const { rows } = await Student.create({
         studentId,
         ...req.body,
-        ...documents,
       });
 
       res.status(201).send({ data: { id: rows[0].id } });
     } catch (error) {
       console.log({ error });
       res.status(500).send({ error });
+    }
+  }
+);
+
+StudentRouter.post(
+  "/uploads/pwd",
+  upload("uploads/pwd_docs").single("Pwd Certificate"),
+  (req, res) => {
+    try {
+      console.log({ req: req.file });
+      res.status(200).send({
+        size: req.file.size,
+        filePath: req.file.path,
+        fileName: req.file.originalname,
+      });
+    } catch (error) {
+      console.log({ error });
+      res.status(500).send({ error: "Internal Server Error" });
+    }
+  }
+);
+
+StudentRouter.post(
+  "/uploads/selfie",
+  upload("uploads/selfie").single("Image"),
+  (req, res) => {
+    try {
+      console.log({ req: req.file });
+      res.status(200).send({
+        size: req.file.size,
+        filePath: req.file.path,
+        fileName: req.file.originalname,
+      });
+    } catch (error) {
+      console.log({ error });
+      res.status(500).send({ error: "Internal Server Error" });
+    }
+  }
+);
+
+StudentRouter.post(
+  "/uploads/bpl",
+  upload("uploads/bpl_docs").single("Bpl Certificate"),
+  (req, res) => {
+    try {
+      console.log({ req: req.file });
+      res.status(200).send({
+        size: req.file.size,
+        filePath: req.file.path,
+        fileName: req.file.originalname,
+      });
+    } catch (error) {
+      console.log({ error });
+      res.status(500).send({ error: "Internal Server Error" });
     }
   }
 );

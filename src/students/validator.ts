@@ -6,30 +6,45 @@ export const validator = () => {
     body("nri").isBoolean(),
     body("email").exists().isEmail(),
     body([
-      "_state",
-      "father_name",
-      "mother_name",
+      "religion",
       "blood_group",
       "nationality",
       "annual_family_income",
+
+      "father_phone",
+      "father_name",
+      "father_occupation",
+
+      "mother_phone",
+      "mother_name",
+      "mother_occupation",
+
+      "permanent_city",
+      "permanent_state",
+      "permanent_country",
+      "permanent_zip_code",
+      "permanent_address_line_1",
+
+      "current_city",
+      "current_state",
+      "current_country",
+      "current_zip_code",
+      "current_address_line_1",
     ])
       .exists()
       .isString(),
     body([
-      "religion",
       "twitter",
       "facebook",
       "instagram",
+
       "father_email",
-      "father_phone",
       "mother_email",
-      "mother_phone",
-      "current_address",
-      "permanent_address",
-      "father_occupation",
-      "mother_occupation",
+
+      "current_address_line_2",
+      "permanent_address_line_2",
     ]).isString(),
-    body("area").exists().isIn(["urban", "rural"]),
-    body("marital_status").exists().isIn(["single", "widow", "married"]),
+    body("area").exists().isIn(["Urban", "Rural"]),
+    body("marital_status").exists().isIn(["Single", "Widow", "Married"]),
   ];
 };

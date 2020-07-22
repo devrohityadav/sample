@@ -489,18 +489,19 @@ button:focus,
   fill: var(--body-bg);
 }
 
-#upload_marksheet small,
-#upload_photo small {
+#file_upload {
+  padding-top: 24px;
+}
+
+#file_upload small {
   display: block;
 }
 
-#upload_marksheet .button,
-#upload_photo .button {
+#file_upload .button {
   margin: 1em 0 0.75em;
 }
 
-#upload_marksheet .upload_progress,
-#upload_photo .upload_progress {
+#file_upload .upload_progress {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

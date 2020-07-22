@@ -15,9 +15,22 @@ interface Student {
 
   // Postal Address
   area: String;
-  _state: String;
-  current_address: String;
-  permanent_address: String;
+
+  // Permanent Address
+  permanent_address_line_1: String;
+  permanent_address_line_2: String;
+  permanent_city: String;
+  permanent_state: String;
+  permanent_zip_code: String;
+  permanent_country: String;
+
+  // Current Address
+  current_address_line_1: String;
+  current_address_line_2: String;
+  current_city: String;
+  current_state: String;
+  current_zip_code: String;
+  current_country: String;
 
   // father's details
   father_name: String;
@@ -46,7 +59,7 @@ const create = (student: Student) => {
   const id = uuidV4();
 
   return db.query(
-    "INSERT INTO students (id, studentId, nri, email, religion, nationality, blood_group, marital_status, annual_family_income, area, _state, current_address, permanent_address, father_name, father_email, father_phone, father_occupation, mother_name, mother_email, mother_phone, mother_occupation, bpl, img, pwd, twitter, facebook, instagram) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING id;",
+    "INSERT INTO students (id, studentId, nri, email, religion, nationality, blood_group, marital_status, annual_family_income, area, permanent_address_line_1, permanent_address_line_2, permanent_city, permanent_state, permanent_zip_code, permanent_country, current_address_line_1, current_address_line_2, current_city, current_state, current_zip_code, current_country, father_name, father_email, father_phone, father_occupation, mother_name, mother_email, mother_phone, mother_occupation, bpl, img, pwd, twitter, facebook, instagram) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36) RETURNING id;",
     [
       id,
       student.studentId,
@@ -57,21 +70,37 @@ const create = (student: Student) => {
       student.blood_group,
       student.marital_status,
       student.annual_family_income,
+
       student.area,
-      student._state,
-      student.current_address,
-      student.permanent_address,
+
+      student.permanent_address_line_1,
+      student.permanent_address_line_2,
+      student.permanent_city,
+      student.permanent_state,
+      student.permanent_zip_code,
+      student.permanent_country,
+
+      student.current_address_line_1,
+      student.current_address_line_2,
+      student.current_city,
+      student.current_state,
+      student.current_zip_code,
+      student.current_country,
+
       student.father_name,
       student.father_email,
       student.father_phone,
       student.father_occupation,
+
       student.mother_name,
       student.mother_email,
       student.mother_phone,
       student.mother_occupation,
+
       student.bpl,
       student.img,
       student.pwd,
+
       student.twitter,
       student.facebook,
       student.instagram,

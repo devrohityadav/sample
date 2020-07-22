@@ -2,19 +2,21 @@ import qs from "qs";
 import React, { Component } from "react";
 
 import { Notice } from "./notice";
+import { validate } from "./validator";
+import { FileUpload } from "./fileUpload";
 
 class Form extends Component {
   state = {
     loading: true,
 
     nri: false,
-    email: "",
     religion: "",
     studentId: "",
     nationality: "",
     blood_group: "",
     marital_status: "Single",
     annual_family_income: "",
+    email: "rohit@gmail.com",
 
     area: "",
     // Current Address
@@ -46,9 +48,21 @@ class Form extends Component {
     mother_occupation: "",
 
     // documents
-    bpl: null,
-    img: null,
-    pwd: null,
+    bpl: {
+      fileName: "",
+      filePath: "",
+      size: 0,
+    },
+    img: {
+      fileName: "",
+      filePath: "",
+      size: 0,
+    },
+    pwd: {
+      fileName: "",
+      filePath: "",
+      size: 0,
+    },
 
     // Social Feeds
     twitter: "",
@@ -70,8 +84,16 @@ class Form extends Component {
     event.preventDefault();
     this.setState(() => ({ loading: true }));
 
-    const { pwd, bpl, img } = this.state;
-    const data = { pwd, bpl, img };
+    const data = {
+      ...this.state,
+      pwd: this.state.pwd.filePath,
+      bpl: this.state.bpl.filePath,
+      img: this.state.img.filePath,
+    };
+
+    const errors = validate(data);
+    console.log({ errors });
+    if (errors.length > 0) return;
 
     const formData = new FormData();
 
@@ -79,22 +101,19 @@ class Form extends Component {
       formData.append(attribute, data[attribute]);
     }
 
-    const url = "http://localhost:8080/students/abc-123";
-
     try {
-      const response = await fetch(url, {
+      const response = await fetch(this.props.url, {
         method: "POST",
         body: formData,
       });
 
       const json = await response.json();
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         // success
       } else {
-        throw new Error(
-          `Status: ${response.status} , error: ${JSON.stringify(json.error)}`
-        );
+        console.log({ [response.status]: json.error });
+        throw new Error(json.error);
       }
     } catch (error) {
       this.setState(() => ({ error: error.message }));
@@ -103,10 +122,8 @@ class Form extends Component {
     }
   };
 
-  handleFileUpload = (event) => {
-    const { name, files } = event.target;
-
-    this.setState(() => ({ [name]: files[0] }));
+  setUploadedFile = ({ id, ...data }) => {
+    this.setState(() => ({ [id]: data }));
   };
 
   handleCheckBox = (event) => {
@@ -136,7 +153,6 @@ class Form extends Component {
               Blood Group <i className="req">*</i>
             </label>
             <select
-              required
               id="bloodGroup"
               name="blood_group"
               onChange={this.handleChange}
@@ -250,7 +266,6 @@ class Form extends Component {
             Annual Family Income State <i className="req">*</i>
           </label>
           <input
-            required
             id="income"
             type="number"
             placeholder="Approx."
@@ -291,7 +306,6 @@ class Form extends Component {
             Nationality <i className="req">*</i>
           </label>
           <input
-            required
             type="text"
             id="nationality"
             name="nationality"
@@ -346,7 +360,6 @@ class Form extends Component {
                 State <i className="req">*</i>
               </label>
               <input
-                required
                 type="text"
                 id="c-state"
                 name="current_state"
@@ -508,7 +521,6 @@ class Form extends Component {
             Fathers Name <i className="req">*</i>
           </label>
           <input
-            required
             type="text"
             id="f-fullName"
             name="father_name"
@@ -558,7 +570,6 @@ class Form extends Component {
             Mothers Name <i className="req">*</i>
           </label>
           <input
-            required
             type="text"
             id="m-fullName"
             name="mother_name"
@@ -633,6 +644,28 @@ class Form extends Component {
             value={this.state.instagram}
           />
         </fieldset>
+
+        <FileUpload
+          id="img"
+          fileTag="Image"
+          uploadedFile={this.state.img}
+          uploadUrl="/students/uploads/selfie"
+          setUploadedFile={this.setUploadedFile}
+        />
+        <FileUpload
+          id="pwd"
+          fileTag="Pwd Certificate"
+          uploadedFile={this.state.pwd}
+          uploadUrl="/students/uploads/pwd"
+          setUploadedFile={this.setUploadedFile}
+        />
+        <FileUpload
+          id="bpl"
+          fileTag="Bpl Certificate"
+          uploadedFile={this.state.bpl}
+          uploadUrl="/students/uploads/bpl"
+          setUploadedFile={this.setUploadedFile}
+        />
 
         <br />
         <input type="submit" value="Submit" />

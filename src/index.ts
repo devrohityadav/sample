@@ -11,7 +11,10 @@ let app = express();
 app.use(bodyparser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../client/build")));
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use(
+  "/students/uploads",
+  express.static(path.join(__dirname, "../uploads"))
+);
 
 // Routes setup
 app.use("/students", StudentRouter);
