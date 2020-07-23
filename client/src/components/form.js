@@ -1,4 +1,3 @@
-import qs from "qs";
 import React, { Component } from "react";
 
 import { Notice } from "./notice";
@@ -9,15 +8,20 @@ import { FileUpload } from "./fileUpload";
 class Form extends Component {
   state = {
     loading: true,
+    data: {
+      id: "",
+      name: "",
+      pwd: null,
+      bpl: null,
+      error: null,
+    },
 
     nri: false,
     religion: "",
-    studentId: "",
     nationality: "",
     blood_group: "",
     marital_status: "Single",
     annual_family_income: "",
-    email: "rohit@gmail.com",
 
     area: "Urban",
     // Current Address
@@ -94,14 +98,35 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { studentId } = qs.parse(window.location.search, {
-      ignoreQueryPrefix: true,
-    });
-
     //  fetch student details
-
-    this.setState(() => ({ studentId, loading: false }));
+    this.getStudentDetails();
   }
+
+  getStudentDetails = async () => {
+    const hash = window.location.href.split("/").pop();
+
+    try {
+      const res = await fetch(
+        `http://admissions.shillongcollege.ac.in/applications/post_admissions/getid/${hash}`
+      );
+      const data = await res.json();
+
+      if (res.status === 404) {
+        throw new Error(data.message);
+      }
+
+      if (res.status === 500) {
+        throw new Error("Internal Server Error");
+      }
+
+      this.setState(() => ({ data, loading: false }));
+    } catch (error) {
+      this.setState(() => ({
+        loading: false,
+        data: { error: error.message },
+      }));
+    }
+  };
 
   mapErrors = (errors) => {
     let placeholder = {};
@@ -117,6 +142,8 @@ class Form extends Component {
 
     const data = {
       ...this.state,
+      name: this.state.data.name,
+      studentId: this.state.data.id,
       pwd: this.state.pwd.filePath,
       bpl: this.state.bpl.filePath,
       img: this.state.img.filePath,
@@ -136,7 +163,7 @@ class Form extends Component {
     }
 
     try {
-      const response = await fetch(this.props.url, {
+      const response = await fetch(`this.props.url/${this.state.data.id}`, {
         method: "POST",
         body: formData,
       });
@@ -181,8 +208,10 @@ class Form extends Component {
   };
 
   render() {
-    console.log(this.state);
-    const { errors } = this.state;
+    const { data, errors, loading } = this.state;
+
+    if (loading) return <div>Loading...</div>;
+    if (!!data.error) return <Message message={data.error} />;
 
     return (
       <form className="form" onSubmit={this.handleSubmit}>
@@ -750,20 +779,24 @@ class Form extends Component {
           uploadUrl={this.props.imgUploadUrl}
           setUploadedFile={this.setUploadedFile}
         />
-        <FileUpload
-          id="pwd"
-          fileTag="Pwd Certificate"
-          uploadedFile={this.state.pwd}
-          uploadUrl={this.props.pwdUploadUrl}
-          setUploadedFile={this.setUploadedFile}
-        />
-        <FileUpload
-          id="bpl"
-          fileTag="Bpl Certificate"
-          uploadedFile={this.state.bpl}
-          uploadUrl={this.props.bplUploadUrl}
-          setUploadedFile={this.setUploadedFile}
-        />
+        {this.state.data.pwd && (
+          <FileUpload
+            id="pwd"
+            fileTag="Pwd Certificate"
+            uploadedFile={this.state.pwd}
+            uploadUrl={this.props.pwdUploadUrl}
+            setUploadedFile={this.setUploadedFile}
+          />
+        )}
+        {this.state.data.bpl && (
+          <FileUpload
+            id="bpl"
+            fileTag="Bpl Certificate"
+            uploadedFile={this.state.bpl}
+            uploadUrl={this.props.bplUploadUrl}
+            setUploadedFile={this.setUploadedFile}
+          />
+        )}
 
         {!!errors.server && <Message message={errors.server} />}
 

@@ -1,8 +1,8 @@
 import React from "react";
 
 export const Footer = ({ organization }) => (
-  <footer class="page-footer">
-    <div class="terms">
+  <footer className="page-footer">
+    <div className="terms">
       <a
         href="http://shillongcollege.ac.in/wp-content/uploads/2020/terms_conditions.pdf"
         target="_blank"

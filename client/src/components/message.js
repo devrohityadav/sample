@@ -38,11 +38,7 @@ const Message = ({ type, message }) => {
         {message}
       </div>
     );
-  return (
-    <div div className="error-message">
-      {message}
-    </div>
-  );
+  return <div className="error-message">{message}</div>;
 };
 
 export { Message };

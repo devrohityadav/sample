@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Main } from "./components";
 
 const config = {
-  formURL: "/1",
+  formURL: "/",
   bplUploadUrl: "/uploads/bpl",
   pwdUploadUrl: "/uploads/pwd",
   imgUploadUrl: "/uploads/selfie",
