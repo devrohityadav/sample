@@ -11,13 +11,10 @@ let app = express();
 app.use(bodyparser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../client/build")));
-app.use(
-  "/students/uploads",
-  express.static(path.join(__dirname, "../uploads"))
-);
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes setup
-app.use("/students", StudentRouter);
+app.use("/", StudentRouter);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.

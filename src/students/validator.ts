@@ -5,32 +5,37 @@ export const validator = () => {
     param("studentId").exists({ checkNull: true, checkFalsy: true }),
     body("nri").isBoolean(),
     body("email").exists().isEmail(),
+    /*
+      Check if these params have values
+      Alignment of params array should match the dom element alignment
+    */
     body([
-      "religion",
       "blood_group",
-      "nationality",
+      "religion",
       "annual_family_income",
+      "nationality",
 
-      "father_phone",
-      "father_name",
-      "father_occupation",
-
-      "mother_phone",
-      "mother_name",
-      "mother_occupation",
-
-      "permanent_city",
-      "permanent_state",
-      "permanent_country",
-      "permanent_zip_code",
-      "permanent_address_line_1",
-
+      "current_address_line_1",
       "current_city",
       "current_state",
-      "current_country",
       "current_zip_code",
-      "current_address_line_1",
+      "current_country",
+
+      "permanent_address_line_1",
+      "permanent_city",
+      "permanent_state",
+      "permanent_zip_code",
+      "permanent_country",
+
+      "father_name",
+      "father_phone",
+      "father_occupation",
+
+      "mother_name",
+      "mother_phone",
+      "mother_occupation",
     ])
+      .notEmpty()
       .exists()
       .isString(),
     body([

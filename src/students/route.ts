@@ -28,6 +28,8 @@ StudentRouter.get("/:id", async (req, res) => {
 
 StudentRouter.post(
   "/:studentId",
+  // multer handles multi-part form data
+  upload("").none(),
   validator(),
   async (req: Request, res: Response) => {
     try {
@@ -40,12 +42,12 @@ StudentRouter.post(
         return;
       }
 
-      const { rows } = await Student.create({
+      await Student.create({
         studentId,
         ...req.body,
       });
 
-      res.status(201).send({ data: { id: rows[0].id } });
+      res.status(201).send();
     } catch (error) {
       console.log({ error });
       res.status(500).send({ error });
@@ -58,14 +60,12 @@ StudentRouter.post(
   upload("uploads/pwd_docs").single("Pwd Certificate"),
   (req, res) => {
     try {
-      console.log({ req: req.file });
       res.status(200).send({
         size: req.file.size,
         filePath: req.file.path,
         fileName: req.file.originalname,
       });
     } catch (error) {
-      console.log({ error });
       res.status(500).send({ error: "Internal Server Error" });
     }
   }
@@ -76,14 +76,12 @@ StudentRouter.post(
   upload("uploads/selfie").single("Image"),
   (req, res) => {
     try {
-      console.log({ req: req.file });
       res.status(200).send({
         size: req.file.size,
         filePath: req.file.path,
         fileName: req.file.originalname,
       });
     } catch (error) {
-      console.log({ error });
       res.status(500).send({ error: "Internal Server Error" });
     }
   }
@@ -94,14 +92,12 @@ StudentRouter.post(
   upload("uploads/bpl_docs").single("Bpl Certificate"),
   (req, res) => {
     try {
-      console.log({ req: req.file });
       res.status(200).send({
         size: req.file.size,
         filePath: req.file.path,
         fileName: req.file.originalname,
       });
     } catch (error) {
-      console.log({ error });
       res.status(500).send({ error: "Internal Server Error" });
     }
   }

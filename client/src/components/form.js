@@ -2,6 +2,7 @@ import qs from "qs";
 import React, { Component } from "react";
 
 import { Notice } from "./notice";
+import { Message } from "./message";
 import { validate } from "./validator";
 import { FileUpload } from "./fileUpload";
 
@@ -18,7 +19,7 @@ class Form extends Component {
     annual_family_income: "",
     email: "rohit@gmail.com",
 
-    area: "",
+    area: "Urban",
     // Current Address
     current_address_line_1: "",
     current_address_line_2: "",
@@ -68,6 +69,28 @@ class Form extends Component {
     twitter: "",
     facebook: "",
     instagram: "",
+
+    // Errors
+    errors: {
+      blood_group: "Select Blood Group",
+      religion: "Enter Religion",
+      annual_family_income: "Enter Annual family Income",
+      nationality: "Enter Nationality",
+      current_address_line_1: "Enter Address",
+      current_city: "Enter City",
+      current_state: "Enter State",
+      current_zip_code: "Enter Zip Code",
+      permanent_address_line_1: "Enter Address",
+      permanent_city: "Enter City",
+      permanent_state: "Enter State",
+      permanent_zip_code: "Enter Zip Code",
+      father_name: "Enter Father's Name",
+      father_phone: "Enter Father's Mobile Number",
+      father_occupation: "Enter Father's Occupation",
+      mother_name: "Enter Mother's Name",
+      mother_phone: "Enter Mother's Mobile Number",
+      mother_occupation: "Enter Mother's Occupation",
+    },
   };
 
   componentDidMount() {
@@ -80,9 +103,17 @@ class Form extends Component {
     this.setState(() => ({ studentId, loading: false }));
   }
 
+  mapErrors = (errors) => {
+    let placeholder = {};
+    errors.forEach((error) => (placeholder[error.param] = error.msg));
+    this.setState(() => ({ errors: placeholder }));
+    document.getElementById(errors[0].param).focus();
+    return;
+  };
+
   handleSubmit = async (event) => {
     event.preventDefault();
-    this.setState(() => ({ loading: true }));
+    this.setState(() => ({ loading: true, errors: {} }));
 
     const data = {
       ...this.state,
@@ -92,8 +123,11 @@ class Form extends Component {
     };
 
     const errors = validate(data);
-    console.log({ errors });
-    if (errors.length > 0) return;
+
+    if (errors.length > 0) {
+      this.mapErrors(errors);
+      return;
+    }
 
     const formData = new FormData();
 
@@ -107,16 +141,19 @@ class Form extends Component {
         body: formData,
       });
 
-      const json = await response.json();
-
       if (response.status === 201) {
-        // success
+        window.location.href = "/success.html";
+        return;
+      }
+
+      if (response.status === 400) {
+        const json = await response.json();
+        this.mapErrors(json.error);
       } else {
-        console.log({ [response.status]: json.error });
-        throw new Error(json.error);
+        throw new Error("Internal Server error!");
       }
     } catch (error) {
-      this.setState(() => ({ error: error.message }));
+      this.setState(() => ({ errors: { server: error.message } }));
     } finally {
       this.setState(() => ({ loading: false }));
     }
@@ -135,11 +172,18 @@ class Form extends Component {
   handleChange = (event) => {
     const { name, value } = event.target;
 
-    this.setState(() => ({ [name]: value }));
+    const { errors } = this.state;
+    if (value.length > 0) {
+      errors[name] = null;
+    }
+
+    this.setState(() => ({ [name]: value, errors }));
   };
 
   render() {
     console.log(this.state);
+    const { errors } = this.state;
+
     return (
       <form className="form" onSubmit={this.handleSubmit}>
         <h2>Personal Information</h2>
@@ -149,11 +193,11 @@ class Form extends Component {
         {/* <!-- Blood Group --> */}
         <div className="form-row">
           <div className="select-field">
-            <label htmlFor="bloodGroup">
+            <label htmlFor="blood_group">
               Blood Group <i className="req">*</i>
             </label>
             <select
-              id="bloodGroup"
+              id="blood_group"
               name="blood_group"
               onChange={this.handleChange}
               value={this.state.blood_group}
@@ -182,6 +226,7 @@ class Form extends Component {
               </svg>
             </span>
           </div>
+          {!!errors.blood_group && <Message message={errors.blood_group} />}
         </div>
 
         {/* <!-- Religion --> */}
@@ -196,6 +241,7 @@ class Form extends Component {
             onChange={this.handleChange}
             value={this.state.religion}
           />
+          {!!errors.religion && <Message message={errors.religion} />}
         </div>
 
         {/* NRI */}
@@ -205,6 +251,7 @@ class Form extends Component {
             <input
               type="radio"
               name="nri"
+              id="nri"
               value="yes"
               checked={this.state.nri}
               onChange={this.handleCheckBox}
@@ -224,7 +271,7 @@ class Form extends Component {
         </fieldset>
 
         {/* <!-- Marital Status --> */}
-        <fieldset>
+        <fieldset id="marital_status">
           <legend>
             Marital Status <i className="req">*</i>
           </legend>
@@ -258,21 +305,27 @@ class Form extends Component {
             />
             <span className="als-radio_checkmark">&nbsp;</span> Widow
           </label>
+          {!!errors.marital_status && (
+            <Message message={errors.marital_status} />
+          )}
         </fieldset>
 
         {/* <!-- Income --> */}
         <div className="form-row">
-          <label htmlFor="income">
+          <label htmlFor="annual_family_income">
             Annual Family Income State <i className="req">*</i>
           </label>
           <input
-            id="income"
+            id="annual_family_income"
             type="number"
             placeholder="Approx."
             name="annual_family_income"
             onChange={this.handleChange}
             value={this.state.annual_family_income}
           />
+          {!!errors.annual_family_income && (
+            <Message message={errors.annual_family_income} />
+          )}
         </div>
 
         {/* <!-- Area --> */}
@@ -282,10 +335,12 @@ class Form extends Component {
           </legend>
           <label className="als-radio">
             <input
-              type="radio"
+              id="area"
               name="area"
+              type="radio"
               value="Rural"
               onChange={this.handleChange}
+              checked={this.state.area === "Rural"}
             />
             <span className="als-radio_checkmark">&nbsp;</span> Rural
           </label>
@@ -295,9 +350,11 @@ class Form extends Component {
               name="area"
               value="Urban"
               onChange={this.handleChange}
+              checked={this.state.area === "Urban"}
             />
             <span className="als-radio_checkmark">&nbsp;</span> Urban
           </label>
+          {!!errors.area && <Message message={errors.area} />}
         </fieldset>
 
         {/* <!-- Nationality --> */}
@@ -312,6 +369,7 @@ class Form extends Component {
             onChange={this.handleChange}
             value={this.state.nationality}
           />
+          {!!errors.nationality && <Message message={errors.nationality} />}
         </div>
 
         <br />
@@ -321,21 +379,24 @@ class Form extends Component {
           <legend>
             Current Address <i className="req">*</i>
           </legend>
-          <label htmlFor="c-street">
+          <label htmlFor="current_address_line_1">
             Address Line 1 <i className="req">*</i>
           </label>
           <input
             type="text"
-            id="c-street"
+            id="current_address_line_1"
             name="current_address_line_1"
             onChange={this.handleChange}
             value={this.state.current_address_line_1}
           />
+          {!!errors.current_address_line_1 && (
+            <Message message={errors.current_address_line_1} />
+          )}
 
-          <label htmlFor="c-street2">Address Line 2</label>
+          <label htmlFor="current_address_line_2">Address Line 2</label>
           <input
             type="text"
-            id="c-street2"
+            id="current_address_line_2"
             onChange={this.handleChange}
             name="current_address_line_2"
             value={this.state.current_address_line_2}
@@ -343,52 +404,61 @@ class Form extends Component {
 
           <div className="row">
             <div className="md-2">
-              <label htmlFor="c-city">
+              <label htmlFor="current_city">
                 City <i className="req">*</i>
               </label>
 
               <input
                 type="text"
-                id="c-city"
+                id="current_city"
                 name="current_city"
                 onChange={this.handleChange}
                 value={this.state.current_city}
               />
+              {!!errors.current_city && (
+                <Message message={errors.current_city} />
+              )}
             </div>
             <div className="md-2">
-              <label htmlFor="c-state">
+              <label htmlFor="current_state">
                 State <i className="req">*</i>
               </label>
               <input
                 type="text"
-                id="c-state"
+                id="current_state"
                 name="current_state"
                 onChange={this.handleChange}
                 value={this.state.current_state}
               />
+              {!!errors.current_state && (
+                <Message message={errors.current_state} />
+              )}
             </div>
           </div>
 
           <div className="row">
             <div className="md-2">
-              <label htmlFor="c-zip">
+              <label htmlFor="current_zip_code">
                 Postal / Zip Code <i className="req">*</i>
               </label>
               <input
-                id="c-zip"
+                id="current_zip_code"
                 type="text"
                 name="current_zip_code"
                 onChange={this.handleChange}
                 value={this.state.current_zip_code}
               />
+              {!!errors.current_zip_code && (
+                <Message message={errors.current_zip_code} />
+              )}
             </div>
             <div className="md-2">
               <div className="select-field">
-                <label htmlFor="c-country">
+                <label htmlFor="current_country">
                   Country <i className="req">*</i>
                 </label>
                 <select
-                  id="c-country"
+                  id="current_country"
                   name="current_country"
                   onChange={this.handleChange}
                   value={this.state.current_country}
@@ -408,6 +478,9 @@ class Form extends Component {
                     <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
                   </svg>
                 </span>
+                {!!errors.current_country && (
+                  <Message message={errors.current_country} />
+                )}
               </div>
             </div>
           </div>
@@ -420,21 +493,24 @@ class Form extends Component {
           <legend>
             Permanent Address <i className="req">*</i>
           </legend>
-          <label htmlFor="p-street">
+          <label htmlFor="permanent_address_line_1">
             Address Line 1 <i className="req">*</i>
           </label>
           <input
             type="text"
-            id="p-street"
+            id="permanent_address_line_1"
             name="permanent_address_line_1"
             onChange={this.handleChange}
             value={this.state.permanent_address_line_1}
           />
+          {!!errors.permanent_address_line_1 && (
+            <Message message={errors.permanent_address_line_1} />
+          )}
 
-          <label htmlFor="p-street2">Address Line 2</label>
+          <label htmlFor="permanent_address_line_2">Address Line 2</label>
           <input
             type="text"
-            id="p-street2"
+            id="permanent_address_line_2"
             name="permanent_address_line_2"
             onChange={this.handleChange}
             value={this.state.permanent_address_line_2}
@@ -442,51 +518,60 @@ class Form extends Component {
 
           <div className="row">
             <div className="md-2">
-              <label htmlFor="p-city">
+              <label htmlFor="permanent_city">
                 City <i className="req">*</i>
               </label>
               <input
                 type="text"
-                id="p-city"
+                id="permanent_city"
                 name="permanent_city"
                 onChange={this.handleChange}
                 value={this.state.permanent_city}
               />
+              {!!errors.permanent_city && (
+                <Message message={errors.permanent_city} />
+              )}
             </div>
             <div className="md-2">
-              <label htmlFor="p-state">
+              <label htmlFor="permanent_state">
                 State <i className="req">*</i>
               </label>
               <input
                 type="text"
-                id="p-state"
+                id="permanent_state"
                 name="permanent_state"
                 onChange={this.handleChange}
                 value={this.state.permanent_state}
               />
+              {!!errors.permanent_state && (
+                <Message message={errors.permanent_state} />
+              )}
             </div>
           </div>
 
           <div className="row">
             <div className="md-2">
-              <label htmlFor="p-zip">
+              <label htmlFor="permanent_zip_code">
                 Postal / Zip Code <i className="req">*</i>
               </label>
               <input
                 type="text"
-                id="p-zip"
+                id="permanent_zip_code"
                 name="permanent_zip_code"
                 onChange={this.handleChange}
                 value={this.state.permanent_zip_code}
               />
+              {!!errors.permanent_zip_code && (
+                <Message message={errors.permanent_zip_code} />
+              )}
             </div>
             <div className="md-2">
               <div className="select-field">
-                <label htmlFor="p-country">
+                <label htmlFor="permanent_country">
                   Country <i className="req">*</i>
                 </label>
                 <select
-                  id="p-country"
+                  id="permanent_country"
                   name="permanent_country"
                   onChange={this.handleChange}
                   value={this.state.permanent_country}
@@ -506,6 +591,9 @@ class Form extends Component {
                     <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
                   </svg>
                 </span>
+                {!!errors.permanent_country && (
+                  <Message message={errors.permanent_country} />
+                )}
               </div>
             </div>
           </div>
@@ -517,47 +605,52 @@ class Form extends Component {
         <fieldset className="float-labels">
           <legend>Fathers Detail</legend>
 
-          <label htmlFor="f-fullName">
+          <label htmlFor="father_name">
             Fathers Name <i className="req">*</i>
           </label>
           <input
             type="text"
-            id="f-fullName"
+            id="father_name"
             name="father_name"
             onChange={this.handleChange}
             value={this.state.father_name}
           />
+          {!!errors.father_name && <Message message={errors.father_name} />}
 
-          <label htmlFor="f-email">Fathers Email</label>
+          <label htmlFor="father_email">Fathers Email</label>
           <input
             type="email"
-            id="f-email"
+            id="father_email"
             name="father_email"
             onChange={this.handleChange}
             value={this.state.father_email}
           />
 
-          <label htmlFor="f-mobile">
+          <label htmlFor="father_phone">
             Fathers Mobile <i className="req">*</i>
           </label>
           <input
             type="tel"
-            id="f-mobile"
+            id="father_phone"
             name="father_phone"
             onChange={this.handleChange}
             value={this.state.father_phone}
           />
+          {!!errors.father_phone && <Message message={errors.father_phone} />}
 
-          <label htmlFor="f-occupation">
+          <label htmlFor="father_occupation">
             Fathers Occupation <i className="req">*</i>
           </label>
           <input
             type="tel"
-            id="f-occupation"
+            id="father_occupation"
             name="father_occupation"
             onChange={this.handleChange}
             value={this.state.father_occupation}
           />
+          {!!errors.father_occupation && (
+            <Message message={errors.father_occupation} />
+          )}
         </fieldset>
 
         <br />
@@ -566,16 +659,17 @@ class Form extends Component {
         <fieldset className="float-labels">
           <legend>Mothers Detail</legend>
 
-          <label htmlFor="m-fullName">
+          <label htmlFor="mother_name">
             Mothers Name <i className="req">*</i>
           </label>
           <input
             type="text"
-            id="m-fullName"
+            id="mother_name"
             name="mother_name"
             onChange={this.handleChange}
             value={this.state.mother_name}
           />
+          {!!errors.mother_name && <Message message={errors.mother_name} />}
 
           <label htmlFor="m-email">Mothers Email</label>
           <input
@@ -586,27 +680,31 @@ class Form extends Component {
             value={this.state.mother_email}
           />
 
-          <label htmlFor="m-mobile">
+          <label htmlFor="mother_phone">
             Mothers Mobile <i className="req">*</i>
           </label>
           <input
             type="tel"
-            id="m-mobile"
+            id="mother_phone"
             name="mother_phone"
             onChange={this.handleChange}
             value={this.state.mother_phone}
           />
+          {!!errors.mother_phone && <Message message={errors.mother_phone} />}
 
-          <label htmlFor="m-occupation">
+          <label htmlFor="mother_occupation">
             Mothers Occupation <i className="req">*</i>
           </label>
           <input
             type="tel"
-            id="m-occupation"
+            id="mother_occupation"
             name="mother_occupation"
             onChange={this.handleChange}
             value={this.state.mother_occupation}
           />
+          {!!errors.mother_occupation && (
+            <Message message={errors.mother_occupation} />
+          )}
         </fieldset>
 
         <br />
@@ -649,23 +747,25 @@ class Form extends Component {
           id="img"
           fileTag="Image"
           uploadedFile={this.state.img}
-          uploadUrl="/students/uploads/selfie"
+          uploadUrl={this.props.imgUploadUrl}
           setUploadedFile={this.setUploadedFile}
         />
         <FileUpload
           id="pwd"
           fileTag="Pwd Certificate"
           uploadedFile={this.state.pwd}
-          uploadUrl="/students/uploads/pwd"
+          uploadUrl={this.props.pwdUploadUrl}
           setUploadedFile={this.setUploadedFile}
         />
         <FileUpload
           id="bpl"
           fileTag="Bpl Certificate"
           uploadedFile={this.state.bpl}
-          uploadUrl="/students/uploads/bpl"
+          uploadUrl={this.props.bplUploadUrl}
           setUploadedFile={this.setUploadedFile}
         />
+
+        {!!errors.server && <Message message={errors.server} />}
 
         <br />
         <input type="submit" value="Submit" />

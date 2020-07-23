@@ -1,6 +1,6 @@
 import React from "react";
 
-const Message = ({ type, size, message }) => {
+const Message = ({ type, message }) => {
   if (type === "success")
     return (
       <div className="success-message">
@@ -38,7 +38,11 @@ const Message = ({ type, size, message }) => {
         {message}
       </div>
     );
-  return <div>{message}</div>;
+  return (
+    <div div className="error-message">
+      {message}
+    </div>
+  );
 };
 
 export { Message };
