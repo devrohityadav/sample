@@ -1,0 +1,41 @@
+# dependencies
+node_modules
+
+# testing
+/test
+
+# playground
+/extras
+/docs
+
+# typescript src
+src
+
+.git
+.env
+.gitignore
+tsconfig.json
+tslint.json
+LICENSE
+README.md
+docker-compose.yml
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# scripts
+scripts
+
+# logs
+*.log
+
+# client
+client/src
+client/node_modules
+client/public
+client/package.json
+client/README.md
+client/*.lock

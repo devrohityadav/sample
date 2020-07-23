@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: post-admission
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "3000:5432"
+  api:
+    image: post-admission-api
+    environment:
+      PORT: 8080
+      NODE_ENV: production
+      DB_URL: postgresql://postgres:password@db:3000/post-admission
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
