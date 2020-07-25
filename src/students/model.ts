@@ -5,7 +5,7 @@ import db from "../db";
 interface Student {
   id: any;
   nri: Boolean;
-  email: String;
+  name: String;
   religion: String;
   studentId: String;
   nationality: String;
@@ -59,12 +59,12 @@ const create = (student: Student) => {
   const id = uuidV4();
 
   return db.query(
-    "INSERT INTO students (id, studentId, nri, email, religion, nationality, blood_group, marital_status, annual_family_income, area, permanent_address_line_1, permanent_address_line_2, permanent_city, permanent_state, permanent_zip_code, permanent_country, current_address_line_1, current_address_line_2, current_city, current_state, current_zip_code, current_country, father_name, father_email, father_phone, father_occupation, mother_name, mother_email, mother_phone, mother_occupation, bpl, img, pwd, twitter, facebook, instagram) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36) RETURNING id;",
+    "INSERT INTO students (id, studentId, nri, name, religion, nationality, blood_group, marital_status, annual_family_income, area, permanent_address_line_1, permanent_address_line_2, permanent_city, permanent_state, permanent_zip_code, permanent_country, current_address_line_1, current_address_line_2, current_city, current_state, current_zip_code, current_country, father_name, father_email, father_phone, father_occupation, mother_name, mother_email, mother_phone, mother_occupation, bpl, img, pwd, twitter, facebook, instagram) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36) RETURNING id;",
     [
       id,
       student.studentId,
       student.nri,
-      student.email,
+      student.name,
       student.religion,
       student.nationality,
       student.blood_group,

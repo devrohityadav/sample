@@ -4,7 +4,6 @@ export const validator = () => {
   return [
     param("studentId").exists({ checkNull: true, checkFalsy: true }),
     body("nri").isBoolean(),
-    body("email").exists().isEmail(),
     /*
       Check if these params have values
       Alignment of params array should match the dom element alignment

@@ -7,7 +7,6 @@ export const Main = (props) => (
   <div>
     <main id="main-content">
       <Form
-        url={props.formURL}
         notice={props.notice}
         bplUploadUrl={props.bplUploadUrl}
         imgUploadUrl={props.imgUploadUrl}

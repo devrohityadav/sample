@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import {Loader} from './loader';
 import { Notice } from "./notice";
 import { Message } from "./message";
 import { validate } from "./validator";
@@ -7,13 +8,14 @@ import { FileUpload } from "./fileUpload";
 
 class Form extends Component {
   state = {
-    loading: true,
+    form_loading: false,
     data: {
       id: "",
       name: "",
       pwd: null,
       bpl: null,
       error: null,
+      loading: true
     },
 
     nri: false,
@@ -103,11 +105,12 @@ class Form extends Component {
   }
 
   getStudentDetails = async () => {
-    const hash = window.location.href.split("/").pop();
+    const hash = window.location.href.split("/").pop() || null;
 
     try {
       const res = await fetch(
         `http://admissions.shillongcollege.ac.in/applications/post_admissions/getid/${hash}`
+        // `http://localhost:5000/${hash}`
       );
       const data = await res.json();
 
@@ -119,11 +122,10 @@ class Form extends Component {
         throw new Error("Internal Server Error");
       }
 
-      this.setState(() => ({ data, loading: false }));
+      this.setState(() => ({ data: { ...data , loading: false} }));
     } catch (error) {
       this.setState(() => ({
-        loading: false,
-        data: { error: error.message },
+        data: { error: error.message,loading: false, },
       }));
     }
   };
@@ -138,7 +140,6 @@ class Form extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    this.setState(() => ({ loading: true, errors: {} }));
 
     const data = {
       ...this.state,
@@ -163,7 +164,8 @@ class Form extends Component {
     }
 
     try {
-      const response = await fetch(`this.props.url/${this.state.data.id}`, {
+      this.setState(() => ({ form_loading: true, errors: {} }));
+      const response = await fetch(`/${this.state.data.id}`, {
         method: "POST",
         body: formData,
       });
@@ -182,7 +184,7 @@ class Form extends Component {
     } catch (error) {
       this.setState(() => ({ errors: { server: error.message } }));
     } finally {
-      this.setState(() => ({ loading: false }));
+      this.setState(() => ({ form_loading: false }));
     }
   };
 
@@ -208,9 +210,9 @@ class Form extends Component {
   };
 
   render() {
-    const { data, errors, loading } = this.state;
+    const { data, errors, form_loading } = this.state;
 
-    if (loading) return <div>Loading...</div>;
+    if (data.loading) return <Loader />;
     if (!!data.error) return <Message message={data.error} />;
 
     return (
@@ -799,9 +801,9 @@ class Form extends Component {
         )}
 
         {!!errors.server && <Message message={errors.server} />}
-
         <br />
-        <input type="submit" value="Submit" />
+        {form_loading ? <Loader /> : <input type="submit" value="Submit" />}
+        
       </form>
     );
   }
