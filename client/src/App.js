@@ -3,9 +3,9 @@ import React, { Component } from "react";
 import { Main } from "./components";
 
 const config = {
-  bplUploadUrl: "/uploads/bpl",
-  pwdUploadUrl: "/uploads/pwd",
-  imgUploadUrl: "/uploads/selfie",
+  bplUploadUrl: "/api/uploads/bpl",
+  pwdUploadUrl: "/api/uploads/pwd",
+  imgUploadUrl: "/api/uploads/selfie",
 
   notice:
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati enim tempora, in quis ducimus veniam aliquid hic vero sequi, assumenda quam repellat deleniti autem inventore sapiente labore quos quisquam provident?",

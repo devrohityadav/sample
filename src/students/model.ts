@@ -109,7 +109,7 @@ const create = (student: Student) => {
 };
 
 const getById = (id: string) => {
-  return db.query("SELECT * FROM students WHERE id=$1;", [id]);
+  return db.query("SELECT * FROM students WHERE studentId=$1;", [id]);
 };
 
 const getAll = () => {

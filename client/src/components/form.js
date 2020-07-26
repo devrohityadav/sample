@@ -109,8 +109,8 @@ class Form extends Component {
 
     try {
       const res = await fetch(
-        `http://admissions.shillongcollege.ac.in/applications/post_admissions/getid/${hash}`
-        // `http://localhost:5000/${hash}`
+        // `http://admissions.shillongcollege.ac.in/applications/post_admissions/getid/${hash}`
+        `/mock/${hash}`
       );
       const data = await res.json();
 
@@ -165,7 +165,7 @@ class Form extends Component {
 
     try {
       this.setState(() => ({ form_loading: true, errors: {} }));
-      const response = await fetch(`/${this.state.data.id}`, {
+      const response = await fetch(`/api/${this.state.data.id}`, {
         method: "POST",
         body: formData,
       });
@@ -673,7 +673,7 @@ class Form extends Component {
             Fathers Occupation <i className="req">*</i>
           </label>
           <input
-            type="tel"
+            type="text"
             id="father_occupation"
             name="father_occupation"
             onChange={this.handleChange}
@@ -727,7 +727,7 @@ class Form extends Component {
             Mothers Occupation <i className="req">*</i>
           </label>
           <input
-            type="tel"
+            type="text"
             id="mother_occupation"
             name="mother_occupation"
             onChange={this.handleChange}
@@ -767,7 +767,7 @@ class Form extends Component {
           </label>
           <input
             id="ig"
-            type="tel"
+            type="text"
             name="instagram"
             onChange={this.handleChange}
             value={this.state.instagram}

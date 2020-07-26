@@ -6,7 +6,129 @@ info:
 servers:
 - url: http://localhost:8080
 paths:
-  /students/{studentId}:
+  /api/uploads/selfie:
+    post:
+      tags:
+        - Student
+      summary: Post a selfie  
+      operationId: postSelfie
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Image:
+                  type: string
+                  format: binary
+              required: 
+                - Image
+      responses:
+        200:
+          description: Uploaded
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  size: 
+                    type: number
+                  filePath:
+                    type: string
+                  fileName:
+                    type: string
+        500:
+          description: Internal server error
+          content:  
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  error: 
+                    type: string
+          
+  /api/uploads/bpl:
+    post:
+      tags:
+        - Student
+      summary: Post bpl certificate  
+      operationId: postBpl
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Bpl Certificate:
+                  type: string
+                  format: binary
+              required: 
+                - Bpl Certificate
+      responses:
+        200:
+          description: Uploaded
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  size: 
+                    type: number
+                  filePath:
+                    type: string
+                  fileName:
+                    type: string
+        500:
+          description: Internal server error
+          content:  
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  error: 
+                    type: string    
+                    
+  /api/uploads/pwd:
+    post:
+      tags:
+        - Student
+      summary: Post pwd certificate  
+      operationId: postPwd
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Pwd Certificate:
+                  type: string
+                  format: binary
+              required: 
+                - Pwd Certificate
+      responses:
+        200:
+          description: Uploaded
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  size: 
+                    type: number
+                  filePath:
+                    type: string
+                  fileName:
+                    type: string
+        500:
+          description: Internal server error
+          content:  
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  error: 
+                    type: string                    
+  /api/{studentId}:
     post:
       tags:
       - Student
@@ -28,16 +150,6 @@ paths:
       responses:
         201:
           description: Created
-          content: 
-            application/json:
-              schema: 
-                type: object
-                properties:
-                  data: 
-                    type: object
-                    properties:
-                      id: 
-                        type: string
               
         400:
           description: Bad Request
@@ -66,7 +178,7 @@ paths:
                 properties:
                   error: 
                     type: string
-  /students/{id}:
+  /api/{id}:
     get:
       tags:
       - Student
@@ -103,12 +215,11 @@ paths:
                   error: 
                     type: string
                     
-  /students/all:
+  /api/all:
     get:
       tags:
       - Student
-      summary: Find student details by ID
-      description: Returns a single student
+      summary: Get all students submissions
       operationId: getAllStudents
       responses:
         200:
@@ -135,15 +246,35 @@ components:
   schemas:
     Student:
       required:
-      - annual_family_income
+      - studentId
+      - name
+      
       - blood_group
-      - email
+      - religion
       - marital_status
-      - nationality
+      - annual_family_income
       - area
-      - _state
+      - nationality
+      
+      - current_address_line_1
+      - current_city
+      - current_state
+      - current_zip_code
+      - current_country
+      
+      - permanent_address_line_1
+      - permanent_city
+      - permanent_state
+      - permanent_zip_code
+      - permanent_country
+      
       - father_name
+      - father_phone
+      - father_occupation
+      
       - mother_name
+      - mother_phone
+      - mother_occupation
       type: object
       properties:
         id:
@@ -155,7 +286,7 @@ components:
           description: Id of the student whose details these are
         nri:
           type: boolean
-        email:
+        name:
           type: string
         religion:
           type: string
@@ -166,22 +297,44 @@ components:
         marital_status:
           type: string
           enum:
-          - single
-          - widow
-          - married
+          - Single
+          - Widow
+          - Married
         annual_family_income:
           type: string
         area:
           type: string
           enum:
-          - urban
-          - rural
-        _state:
+          - Urban
+          - Rural
+          
+        current_address_line_1: 
           type: string
-        current_address:
+        current_address_line_2:
           type: string
-        permanent_address:
+        current_city: 
           type: string
+        current_state: 
+          type: string
+        current_zip_code: 
+          type: string
+        current_country: 
+          type: string
+          
+        permanent_address_line_1: 
+          type: string
+        permanent_address_line_2:
+          type: string
+        permanent_city:
+          type: string
+        permanent_state:
+          type: string
+        permanent_zip_code: 
+          type: string
+        permanent_country: 
+          type: string
+      
+          
         father_name:
           type: string
         father_email:
@@ -190,6 +343,7 @@ components:
           type: string
         father_occupation:
           type: string
+        
         mother_name:
           type: string
         mother_email:
@@ -198,15 +352,14 @@ components:
           type: string
         mother_occupation:
           type: string
+        
         bpl:
           type: string
-          format: binary
         img:
           type: string
-          format: binary
         pwd:
           type: string
-          format: binary
+        
         twitter:
           type: string
         facebook:
